@@ -1,9 +1,7 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.14)
 set(LIBRARY_NAME EntityComponentSystem2022)
 
 set(CMAKE_CXX_STANDARD 17)
-
-message(${CMAKE_CURRENT_LIST_DIR})
 
 add_library(${LIBRARY_NAME} SHARED
         ${CMAKE_CURRENT_LIST_DIR}/src/components/Archetype.cpp
@@ -29,11 +27,11 @@ add_library(${LIBRARY_NAME} SHARED
         )
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
-        include
-        include/systems
+        ${CMAKE_CURRENT_LIST_DIR}include
+        ${CMAKE_CURRENT_LIST_DIR}include/systems
 
-        src
-        src/components
-        src/systems
+        ${CMAKE_CURRENT_LIST_DIR}src
+        ${CMAKE_CURRENT_LIST_DIR}src/components
+        ${CMAKE_CURRENT_LIST_DIR}src/systems
         )
 
