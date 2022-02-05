@@ -187,7 +187,7 @@ namespace ecs
         for (Archetype *archetype : archetypes)
         {
             auto uTypeIt = uType.begin();
-            std::tuple<ComponentArray<EArgs>*...> arrays = archetype->getArraysOfType_s<EArgs...>(uType.begin());
+            std::tuple<ComponentArray<EArgs>*...> arrays = archetype->getArraysOfType_s<EArgs...>(uTypeIt);
             
             for (int i = 0; i < std::get<0>(arrays)->data.size(); ++i)
                 entities.invoke(std::forward_as_tuple(std::get<ComponentArray<EArgs>*>(arrays)->data[i]...));
