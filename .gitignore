@@ -1,3 +1,7 @@
-/cmake-build-debug/
-/.idea/
-/testing/
+.idea/
+.idea/*
+testing/
+cmake-build-*/
+testing/*
+testing/CMakeLists.txt
+testing/Main.cpp
