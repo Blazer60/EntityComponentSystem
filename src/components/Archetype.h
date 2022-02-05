@@ -9,6 +9,7 @@
 
 #include "Common.h"
 #include "ComponentArray.h"
+#include "BaseSystem.h"
 
 #include <iostream>
 #include <vector>
@@ -16,7 +17,6 @@
 #include <memory>
 #include <unordered_map>
 #include <algorithm>
-#include <BaseSystem.h>
 
 namespace ecs
 {

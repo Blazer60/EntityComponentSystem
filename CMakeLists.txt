@@ -1,39 +1,39 @@
 cmake_minimum_required(VERSION 3.21)
-set(PROJECT_NAME EntityComponentSystem2022)
-project(${PROJECT_NAME})
+set(LIBRARY_NAME EntityComponentSystem2022)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${PROJECT_NAME}
-        src/ecs/components/Archetype.cpp
-        src/ecs/components/ArchetypeManager.cpp
+message(${CMAKE_CURRENT_LIST_DIR})
 
-        src/ecs/Core.cpp
-        src/ecs/Common.cpp
-        src/ecs/EntityManager.cpp
-        src/ecs/SystemManager.cpp
+add_library(${LIBRARY_NAME} SHARED
+        ${CMAKE_CURRENT_LIST_DIR}/src/components/Archetype.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/components/ArchetypeManager.cpp
 
-        src/Main.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/Core.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/Common.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/EntityManager.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/systems/SystemManager.cpp
 
-        include/ecs/components/ArchetypeManager.h
-        include/ecs/components/Archetype.h
-        include/ecs/components/ComponentArray.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/components/ArchetypeManager.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/components/Archetype.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/components/ComponentArray.h
 
-        include/ecs/Ecs.h
-        include/ecs/Core.h
-        include/ecs/Common.h
-        include/ecs/EntityManager.h
-        include/ecs/BaseSystem.h
-        include/ecs/SystemManager.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/Ecs.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/Core.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/Common.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/EntityManager.h
+        ${CMAKE_CURRENT_LIST_DIR}/include/systems/BaseSystem.h
+        ${CMAKE_CURRENT_LIST_DIR}/src/systems/SystemManager.h
 
-        include/ecs/Entities.h)
+        ${CMAKE_CURRENT_LIST_DIR}/include/systems/Entities.h
+        )
 
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${LIBRARY_NAME} PUBLIC
         include
-        include/ecs
-        include/ecs/components
+        include/systems
+
+        src
+        src/components
+        src/systems
         )
 
-target_precompile_headers(${PROJECT_NAME} PUBLIC
-
-        )

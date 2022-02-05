@@ -5,7 +5,7 @@
  */
 
 
-#include "ecs/components/ArchetypeManager.h"
+#include "ArchetypeManager.h"
 
 namespace ecs
 {

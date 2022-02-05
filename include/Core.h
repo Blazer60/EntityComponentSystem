@@ -8,12 +8,13 @@
 #pragma once
 
 #include "Common.h"
-#include "EntityManager.h"
-#include "ArchetypeManager.h"
-#include "SystemManager.h"
+#include "src/EntityManager.h"
+#include "src/components/ArchetypeManager.h"
+#include "src/systems/SystemManager.h"
 
 #include <unordered_map>
 #include <typeinfo>
+#include <memory>
 
 /**
  * @brief Provides helpful functions to access lower level code.
@@ -185,6 +186,7 @@ namespace ecs
         
         for (Archetype *archetype : archetypes)
         {
+            auto uTypeIt = uType.begin();
             std::tuple<ComponentArray<EArgs>*...> arrays = archetype->getArraysOfType_s<EArgs...>(uType.begin());
             
             for (int i = 0; i < std::get<0>(arrays)->data.size(); ++i)

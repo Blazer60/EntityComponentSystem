@@ -12,4 +12,3 @@
 #include "Core.h"
 #include "BaseSystem.h"
 #include "Entities.h"
-#include "SystemManager.h"
