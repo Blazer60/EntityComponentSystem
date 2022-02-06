@@ -27,11 +27,11 @@ add_library(${LIBRARY_NAME} SHARED
         )
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
-        ${CMAKE_CURRENT_LIST_DIR}include
-        ${CMAKE_CURRENT_LIST_DIR}include/systems
+        ${CMAKE_CURRENT_LIST_DIR}/include
+        ${CMAKE_CURRENT_LIST_DIR}/include/systems
 
-        ${CMAKE_CURRENT_LIST_DIR}src
-        ${CMAKE_CURRENT_LIST_DIR}src/components
-        ${CMAKE_CURRENT_LIST_DIR}src/systems
+        ${CMAKE_CURRENT_LIST_DIR}/src
+        ${CMAKE_CURRENT_LIST_DIR}/src/components
+        ${CMAKE_CURRENT_LIST_DIR}/src/systems
         )
 
