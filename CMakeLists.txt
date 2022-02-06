@@ -3,7 +3,7 @@ set(LIBRARY_NAME EntityComponentSystem2022)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(${LIBRARY_NAME} SHARED
+add_library(${LIBRARY_NAME} STATIC
         ${CMAKE_CURRENT_LIST_DIR}/src/components/Archetype.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/components/ArchetypeManager.cpp
 
