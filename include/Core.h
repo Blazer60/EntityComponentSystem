@@ -8,9 +8,9 @@
 #pragma once
 
 #include "Common.h"
-#include "src/EntityManager.h"
-#include "src/components/ArchetypeManager.h"
-#include "src/systems/SystemManager.h"
+#include "EntityManager.h"
+#include "components/ArchetypeManager.h"
+#include "systems/SystemManager.h"
 
 #include <unordered_map>
 #include <typeinfo>
