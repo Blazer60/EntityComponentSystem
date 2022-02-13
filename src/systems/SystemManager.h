@@ -30,6 +30,11 @@ namespace ecs
         void addSystem(const UType &uType, std::unique_ptr<IBaseSystem> iBaseSystem);
         
         /**
+         * @brief Calls start on all systems assigned to this system manager.
+         */
+        void start();
+        
+        /**
          * @brief Updates all of the system assigned to this system manager.
          */
         void update();

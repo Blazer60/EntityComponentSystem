@@ -96,6 +96,9 @@ namespace ecs
      */
     void update();
     
+    /** Calls the start function for all system registered to the ecs system. */
+    void start();
+    
     /**
      * @brief
      * @tparam EArgs

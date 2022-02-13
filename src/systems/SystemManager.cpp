@@ -10,16 +10,22 @@
 
 namespace ecs
 {
-    void SystemManager::update()
-    {
-        for (const auto &sys : mSystems)
-            sys->onUpdate();
-    }
-    
     void SystemManager::addSystem(const UType &uType, std::unique_ptr<IBaseSystem> iBaseSystem)
     {
         mSystems.push_back(std::move(iBaseSystem));
         mSystemUTypes.emplace_back(uType);
+    }
+    
+    void SystemManager::start()
+    {
+        for (auto &sys : mSystems)
+            sys->onStart();
+    }
+    
+    void SystemManager::update()
+    {
+        for (const auto &sys : mSystems)
+            sys->onUpdate();
     }
     
     void SystemManager::updateEntities()

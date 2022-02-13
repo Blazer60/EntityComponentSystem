@@ -32,6 +32,12 @@ namespace ecs
         sSystemManager->updateEntities();
     }
     
+    void start()
+    {
+        sSystemManager->start();
+        sSystemManager->updateEntities();
+    }
+    
     void makeFoundationComponent(Component id)
     {
         sEntityManager->makeFoundationComponent(id);

@@ -26,12 +26,18 @@ namespace ecs
     {
     public:
         virtual ~IBaseSystem() = default;
+    
+        /**
+         * @brief Called when ecs::start() is called.
+         * Allows you to update member variables and change the foreach function dynamically.
+         */
+        virtual void onStart() { };
         
         /**
          * @brief Called when ecs::update() is called.
          * Allows you to update member variables and change the foreach function dynamically.
          */
-        virtual void onUpdate() = 0;
+        virtual void onUpdate() { };
         
         /**
          * @brief Gets the hash code of all types provided in BaseSystem<>. NOT the ids of components.
