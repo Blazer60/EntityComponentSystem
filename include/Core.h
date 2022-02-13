@@ -123,6 +123,14 @@ namespace ecs
     [[nodiscard]] Component getComponentIdOf();
     
     /**
+     * @brief Gets the default Component Id assigned to T. (Identical to getComponentIdOf();)
+     * @tparam T - The type you want to lookup.
+     * @returns A component Id.
+     */
+    template<typename T>
+    [[nodiscard]] Component get();
+    
+    /**
      * @brief Removes a component from an entity.
      * @param entity - The entity you want to target
      * @param component - The component that you want to remove.
@@ -199,6 +207,12 @@ namespace ecs
     
     template<typename T>
     Component getComponentIdOf()
+    {
+        return sEntityManager->getComponentIdOf<T>();
+    }
+    
+    template<typename T>
+    Component get()
     {
         return sEntityManager->getComponentIdOf<T>();
     }

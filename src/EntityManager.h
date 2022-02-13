@@ -103,6 +103,12 @@ namespace ecs
     template<typename T>
     Component EntityManager::getComponentIdOf()
     {
-        return mHashToComponentId.at(typeid(T).hash_code());
+        const auto key = typeid(T).hash_code();
+        
+        // T has no default value. Assign it before using it.
+        if (mHashToComponentId.count(key) < 1)
+            throw std::exception();
+        
+        return mHashToComponentId.at(key);
     }
 }

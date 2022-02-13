@@ -29,13 +29,11 @@ namespace ecs
     void update()
     {
         sSystemManager->update();
-        sSystemManager->updateEntities();
     }
     
     void start()
     {
         sSystemManager->start();
-        sSystemManager->updateEntities();
     }
     
     void makeFoundationComponent(Component id)

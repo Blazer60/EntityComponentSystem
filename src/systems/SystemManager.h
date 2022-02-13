@@ -38,12 +38,7 @@ namespace ecs
          * @brief Updates all of the system assigned to this system manager.
          */
         void update();
-        
-        /**
-         * @brief Updates all of the entities within the system.
-         */
-        void updateEntities();
-        
+
     protected:
         std::vector<std::unique_ptr<IBaseSystem>>   mSystems;
         std::vector<UType>                          mSystemUTypes;

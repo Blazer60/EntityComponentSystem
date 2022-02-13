@@ -18,22 +18,29 @@ namespace ecs
     
     void SystemManager::start()
     {
-        for (auto &sys : mSystems)
+        for (int i = 0; i < mSystems.size(); ++i)
+        {
+            auto &sys   = mSystems[i];
+            auto &sysUType = mSystemUTypes[i];
+            
             sys->onStart();
+            
+            auto *e = sys->getEntities();
+            e->callbackProcessEntities(sysUType);
+        }
     }
     
     void SystemManager::update()
     {
-        for (const auto &sys : mSystems)
-            sys->onUpdate();
-    }
-    
-    void SystemManager::updateEntities()
-    {
         for (int i = 0; i < mSystems.size(); ++i)
         {
-            auto *e = mSystems[0]->getEntities();
-            e->callbackProcessEntities(mSystemUTypes[i]);
+            auto &sys   = mSystems[i];
+            auto &sysUType = mSystemUTypes[i];
+        
+            sys->onUpdate();
+            
+            auto *e = sys->getEntities();
+            e->callbackProcessEntities(sysUType);
         }
     }
 }
