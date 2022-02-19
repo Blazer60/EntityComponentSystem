@@ -53,7 +53,7 @@ namespace ecs
     struct ComponentArray
             : IComponentArray
     {
-        ~ComponentArray() override { std::cout << "Destroying " << data.size() << " values of type" << typeid(T).name() << ".\n"; }
+        ~ComponentArray() override = default;
     
         /**
          * @brief Creates a component array with the underlying type.
