@@ -22,6 +22,9 @@ namespace ecs
     class EntityManager
     {
     public:
+        EntityManager() = default;
+        explicit EntityManager(bool firstOccurrenceIsDefault) : mFirstOccurrenceIsDefault(firstOccurrenceIsDefault) {}
+        
         /**
          * @brief Creates an Entity Id with the Type Entity.
          * @return Entity - A unique Id for an Entity.
@@ -88,6 +91,7 @@ namespace ecs
         Entity mEntityGeneration { 1ull << entityFlagShifts::Generation };
     
         const Entity mComponentIdShift { 24 };
+        const bool mFirstOccurrenceIsDefault { false };
     };
     
     // Implementation
@@ -105,9 +109,14 @@ namespace ecs
     {
         const auto key = typeid(T).hash_code();
         
-        // T has no default value. Assign it before using it.
         if (mHashToComponentId.count(key) < 1)
-            throw std::exception();
+        {
+            // T has no default value. Assign it before using it.
+            if (!mFirstOccurrenceIsDefault)
+                throw std::exception();
+            makeFoundationComponent(createComponent<T>());
+            return mHashToComponentId.at(key);
+        }
         
         return mHashToComponentId.at(key);
     }

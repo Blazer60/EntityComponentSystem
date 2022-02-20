@@ -43,7 +43,7 @@ namespace ecs
          * @brief Gets the hash code of all types provided in BaseSystem<>. NOT the ids of components.
          * @returns hash code of all types.
          */
-        [[nodiscard]] virtual std::vector<uint64_t> getUnderlyingTypes() const = 0;
+        [[nodiscard]] virtual std::vector<uint64_t> getUnderlyingTypeHashes() const = 0;
         
         /**
          * @brief Gets the interface of the entities class so that it can be handled separately.
@@ -69,7 +69,7 @@ namespace ecs
          * @brief Gets the hash code of all types in ...Args. NOT the ids of components.
          * @returns hash code of all types (...Args).
          */
-        [[nodiscard]] std::vector<uint64_t> getUnderlyingTypes() const override;
+        [[nodiscard]] std::vector<uint64_t> getUnderlyingTypeHashes() const override;
         
         /**
          * @brief Gets the interface of the entities class so that it can be handled separately.
@@ -82,7 +82,7 @@ namespace ecs
     };
     
     template<class... Args>
-    std::vector<uint64_t> BaseSystem<Args...>::getUnderlyingTypes() const
+    std::vector<uint64_t> BaseSystem<Args...>::getUnderlyingTypeHashes() const
     {
         return { (typeid(Args).hash_code())... };
     }

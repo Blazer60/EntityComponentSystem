@@ -32,6 +32,15 @@ namespace ecs
     
     /** The type that an entity is (identical to UComponentVector) @see UComponentVector */
     typedef UComponentVector        UType;
+    
+    namespace initFlag
+    {
+        enum init : int
+        {
+            None = 0b0,
+            AutoInitialise = 0b10,
+        };
+    }
 
     /** The location of the first bit that represents a given enum within an Entity Id. */
     namespace entityFlagShifts

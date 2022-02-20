@@ -13,12 +13,18 @@ namespace ecs
     std::unique_ptr<EntityManager>    sEntityManager;
     std::unique_ptr<ArchetypeManager> sArchetypeManager;
     std::unique_ptr<SystemManager>    sSystemManager;
+    int                               sInitSettings;
     
-    void init()
+    void init(const int flags)
     {
-        sEntityManager    = std::make_unique<EntityManager>();
+        if (flags & initFlag::AutoInitialise)
+            sEntityManager = std::make_unique<EntityManager>(true);
+        else
+            sEntityManager = std::make_unique<EntityManager>();
+        
         sArchetypeManager = std::make_unique<ArchetypeManager>();
         sSystemManager    = std::make_unique<SystemManager>();
+        sInitSettings = flags;
     }
     
     Entity create()
@@ -41,17 +47,14 @@ namespace ecs
         sEntityManager->makeFoundationComponent(id);
     }
     
-    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypes)
+    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes)
     {
-        if (uType.size() != underlyingTypes.size())
-        {
-            // The length of uType does not match the length of system's underlying type.
-            // The system will therefore have undefined behaviour.
+        // Miss-matched alignment. Make sure the length of uTypes matches the Systems type length.
+        if (underlyingTypeHashes.size() != uType.size())
             throw std::exception();
-        }
-        for (int i = 0; i < underlyingTypes.size(); ++i)
+        for (int i = 0; i < underlyingTypeHashes.size(); ++i)
         {
-            if (!sEntityManager->isValid(uType[i], underlyingTypes[i]))
+            if (!sEntityManager->isValid(uType[i], underlyingTypeHashes[i]))
                 throw std::exception();  // The type has not been registered yet. The system will produce undefined results.
             // You could also have miss-aligned the types with the underlying types.
         }

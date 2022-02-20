@@ -24,6 +24,18 @@ namespace ecs
          * @param uType - The component Id that pair with each type.
          */
         virtual void callbackProcessEntities(const UType &uType) = 0;
+    
+        /**
+         * @brief Gets the interface of the entities class so that it can be handled separately.
+         * @returns IEntities interface class.
+         */
+        [[nodiscard]] virtual UType getDefaultComponents() const = 0;
+    
+        /**
+         * @brief Gets the hash code of all types provided in Entities<>. NOT the ids of components.
+         * @returns hash code of all types.
+         */
+        [[nodiscard]] virtual std::vector<uint64_t> getUnderlyingTypeHashes() const = 0;
     };
     
     /**
@@ -80,6 +92,18 @@ namespace ecs
          * @param uType - The component Id that will be paired with each Args.
          */
         void callbackProcessEntities(const UType &uType) override;
+    
+        /**
+         * @brief Gets the interface of the entities class so that it can be handled separately.
+         * @returns IEntities interface class.
+         */
+        [[nodiscard]] UType getDefaultComponents() const override;
+    
+        /**
+         * @brief Gets the hash code of all types provided in Entities<>. NOT the ids of components.
+         * @returns hash code of all types.
+         */
+        [[nodiscard]] std::vector<uint64_t> getUnderlyingTypeHashes() const override;
 
     protected:
         FuncSignature mForEachDelegate { [](Args &... args) { } };
@@ -122,5 +146,17 @@ namespace ecs
     void Entities<Args...>::invoke(TArgs &... args) const
     {
         mForEachDelegate(args...);
+    }
+    
+    template<class... Args>
+    UType Entities<Args...>::getDefaultComponents() const
+    {
+        return { getComponentIdOf<Args>()... };
+    }
+    
+    template<class... Args>
+    std::vector<uint64_t> Entities<Args...>::getUnderlyingTypeHashes() const
+    {
+        return { typeid(Args).hash_code()... };
     }
 }

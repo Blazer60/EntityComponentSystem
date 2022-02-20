@@ -27,9 +27,10 @@ namespace ecs
     extern std::unique_ptr<EntityManager>    sEntityManager;
     extern std::unique_ptr<ArchetypeManager> sArchetypeManager;
     extern std::unique_ptr<SystemManager>    sSystemManager;
+    extern int                               sInitSettings;
     
     /** @brief Setup for the ecs system. Throws an error if it is unable to initialise. */
-    void init();
+    void init(int flags=initFlag::None);
     
     /**
      * @brief Creates an entity that components can be added to.
@@ -47,11 +48,11 @@ namespace ecs
     
     /**
      * @brief Checks to see if the uType and the underlying types match within the system. THROWS if there's an error.
-     * uType[i] MUST pair with underlyingTypes[i].
+     * uType[i] MUST pair with underlyingTypeHashes[i].
      * @param uType - The components that you want to check.
-     * @param underlyingTypes - The hash codes of each actual type.
+     * @param underlyingTypeHashes - The hash codes of each actual type.
      */
-    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypes);
+    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes);
     
     /**
      * @brief Creates a system that can be used within the ecs system.
@@ -152,9 +153,28 @@ namespace ecs
     template<typename T, typename... Args>
     void createSystem(const UType &uType, const Args &... args)
     {
+        static_assert(std::is_base_of<IBaseSystem, T>(),
+                      "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
+        
         std::unique_ptr<IBaseSystem> system = std::make_unique<T>(args...);
         
-        verifySystem(uType, system->getUnderlyingTypes());
+        const IEntities * const entities       = system->getEntities();
+        const std::vector<uint64_t> typeHashes = entities->getUnderlyingTypeHashes();
+    
+        if (sInitSettings & initFlag::AutoInitialise)
+        {
+            // Attempt to autofill the rest to make the system type complete.
+            UType components = entities->getDefaultComponents();
+            for (int i = 0; i < uType.size(); ++i)
+                components[i] = uType[i];  // Switch out the ones that the user has already defined.
+    
+            verifySystem(components, typeHashes);
+            
+            sSystemManager->addSystem(components, std::move(system));
+            return;
+        }
+        
+        verifySystem(uType, typeHashes);
         
         sSystemManager->addSystem(uType, std::move(system));
     }
@@ -162,19 +182,18 @@ namespace ecs
     template<typename T, typename... Args>
     void createSystem(const Args &... args)
     {
-        std::unique_ptr<IBaseSystem> system = std::make_unique<T>(args...);
+        static_assert(std::is_base_of<IBaseSystem, T>(),
+                "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
         
-        // Deduce component ids based on the underlying types.
-        std::vector<uint64_t> underlyingTypes = system->getUnderlyingTypes();
+        std::unique_ptr<T> system = std::make_unique<T>(args...);
         
-        UType uType;
-        uType.reserve(underlyingTypes.size());
-        for (const uint64_t &underlyingType : underlyingTypes)
-            uType.emplace_back(sEntityManager->getComponentIdOf(underlyingType));
+        const IEntities * const     entities    = system->getEntities();
+        const std::vector<uint64_t> typeHashes  = entities->getUnderlyingTypeHashes();
+        const UType                 components  = entities->getDefaultComponents();
         
-        verifySystem(uType, underlyingTypes);  // Should never throw here, but it's a nice redundancy check.
+        verifySystem(components, typeHashes);  // Should never throw here, but it's a nice redundancy check.
         
-        sSystemManager->addSystem(uType, std::move(system));
+        sSystemManager->addSystem(components, std::move(system));
     }
     
     template<typename T>

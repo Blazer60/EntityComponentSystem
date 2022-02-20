@@ -61,10 +61,7 @@ namespace ecs
         return { movedIndex, count };
     }
     
-    Archetype::~Archetype()
-    {
-        std::cout << "Destroying Archetype:\n";
-    }
+    Archetype::~Archetype() = default;
     
     void Archetype::moveLastComponent(Component component, uint64_t index)
     {
