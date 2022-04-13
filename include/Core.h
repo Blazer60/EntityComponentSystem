@@ -131,6 +131,42 @@ namespace ecs
         [[nodiscard]] Component get();
     
         /**
+         * @brief Gets a reference to a component of type T.
+         * WARNING: Do not store this value for longer than this function is used.
+         * @tparam T - The type of component you're looking for.
+         * @param entity - The entity that you'd like to query.
+         * @param component - The component Id of T.
+         */
+        template<typename T>
+        [[nodiscard]] T &getComponent(Entity entity, Component component);
+    
+        /**
+         * @brief Checks to see if an entity has a component.
+         * @param entity - The entity that may have component.
+         * @param component - The component you're querying for.
+         * @return True if component was found, false otherwise.
+         */
+        [[nodiscard]] bool hasComponent(Entity entity, Component component);
+    
+        /**
+         * @brief Checks to see if an entity has component T.
+         * @tparam T - The component type you're looking for.
+         * @param entity - The entity that may have T.
+         * @return True if component was found, false otherwise.
+         */
+        template<typename T>
+        bool hasComponent(Entity entity);
+    
+        /**
+         * @brief Gets a reference to a component of type T.
+         * WARNING: Do not store this value for longer than this function is used.
+         * @tparam T - The type of component you're looking for.
+         * @param entity - The entity that you'd like to query.
+         */
+        template<typename T>
+        [[nodiscard]] T &getComponent(Entity entity);
+    
+        /**
          * @brief Removes a component from an entity.
          * @param entity - The entity you want to target
          * @param component - The component that you want to remove.
@@ -245,7 +281,26 @@ namespace ecs
     {
         return mEntityManager.getComponentIdOf<T>();
     }
+    
+    template<typename T>
+    T &Core::getComponent(Entity entity, Component component)
+    {
+        // Component has not been registered.
+        // Type T does not match up with id component.
+        if (!mEntityManager.isValid(component, typeid(T).hash_code()))
+            throw std::exception();
+        return mArchetypeManager.getComponent<T>(entity, component);
+    }
+    
+    template<typename T>
+    T &Core::getComponent(Entity entity)
+    {
+        return getComponent<T>(entity, get<T>());
+    }
+    
+    template<typename T>
+    bool Core::hasComponent(Entity entity)
+    {
+        return hasComponent(entity, get<T>());
+    }
 }
-
-
-

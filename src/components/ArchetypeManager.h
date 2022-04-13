@@ -133,6 +133,24 @@ namespace ecs
          * @returns All Archetypes with at least the given type.
          */
         [[nodiscard]] std::vector<Archetype*> getArchetypesWithSubset(const UType &uType);
+    
+        /**
+         * @brief Gets a reference to a component of type T.
+         * WARNING: Do not store this value for longer than this function is used.
+         * @tparam T - The type of component you're looking for.
+         * @param entity - The entity that you'd like to query.
+         * @param component - The component Id of T.
+         */
+        template<typename T>
+        [[nodiscard]] T &getComponent(Entity entity, Component component) const;
+        
+        /**
+         * @brief Checks to see if an entity has a component.
+         * @param entity - The entity that may have component.
+         * @param component - The component you're querying for.
+         * @return True if component was found, false otherwise.
+         */
+        [[nodiscard]] bool hasComponent(Entity entity, Component component) const;
         
     protected:
         // It doesn't like unordered map, Type cannot be converted into a hash function.
@@ -143,6 +161,15 @@ namespace ecs
          */
         std::unordered_map<Entity, EntityInformation> mEntityInformation;
     };
+    
+    
+    template<typename T>
+    T &ArchetypeManager::getComponent(Entity entity, Component component) const
+    {
+        const auto &information = mEntityInformation.at(entity);
+        const auto &archetype = mArchetypes.at(information.type);
+        return archetype.getComponent<T>(component, information.componentIndex);
+    }
     
     template<typename T>
     void ArchetypeManager::add(Entity entity, Component component, const T &value)

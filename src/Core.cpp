@@ -52,4 +52,9 @@ namespace ecs
     {
         mArchetypeManager.remove(entity, component);
     }
+    
+    bool Core::hasComponent(Entity entity, Component component)
+    {
+        return mArchetypeManager.hasComponent(entity, component);
+    }
 }

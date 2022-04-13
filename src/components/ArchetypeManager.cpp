@@ -75,6 +75,14 @@ namespace ecs
         mArchetypes.emplace(subType, Archetype(*base, subType));
     }
     
+    bool ArchetypeManager::hasComponent(Entity entity, Component component) const
+    {
+        if (!mEntityInformation.count(entity))
+            return false;
+        const EntityInformation &entityInformation = mEntityInformation.at(entity);
+        return entityInformation.type.count(component);
+    }
+    
     bool EntityInformation::operator==(const EntityInformation &rhs) const
     {
         return type == rhs.type &&

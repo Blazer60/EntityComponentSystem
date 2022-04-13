@@ -90,6 +90,15 @@ namespace ecs
         uint64_t pushBack(Component id, const T &value, const Args &... values);
     
         /**
+         * @brief Gets an element within a single component array.
+         * @tparam T - The type component array.
+         * @param component - The component array id and T id.
+         * @param index - The retrieved values index.
+         */
+        template<typename T>
+        T &getComponent(Component component, uint64_t index) const;
+    
+        /**
          * @brief Moves data at dataIndex into newArchetype. The newArchetype MUST be equal or larger to this archetype.
          * @param newArchetype - The archetype that you want to move the data to.
          * @param dataIndex - The index of where the data is.
@@ -243,5 +252,11 @@ namespace ecs
         std::tuple<ComponentArray<EArgs>*...> t(reinterpret_cast<ComponentArray<EArgs>*>(mComponents[mIdToComponentIndex.at(ids)].get())...);
         for (int i = 0; i < std::get<0>(t)->data.size(); ++i)
             entities.invoke(std::forward_as_tuple(std::get<ComponentArray<EArgs>*>(t)->data[i]...));
+    }
+    
+    template<typename T>
+    T &Archetype::getComponent(Component component, uint64_t index) const
+    {
+        return (*get<T>(component))[index];
     }
 }
