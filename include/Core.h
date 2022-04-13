@@ -1,7 +1,7 @@
 /**
  * @file Core.h
  * @author Ryan Purse
- * @date 20/01/2022
+ * @date 13/04/2022
  */
 
 
@@ -11,208 +11,218 @@
 #include "EntityManager.h"
 #include "components/ArchetypeManager.h"
 #include "systems/SystemManager.h"
+#include "Entities.h"
 
 #include <unordered_map>
 #include <typeinfo>
 #include <memory>
 
-/**
- * @brief Provides helpful functions to access lower level code.
- * Static members should not be accessed directly.
- * Use init() to generate the ecs system.
- */
 namespace ecs
 {
-    // Should these be in a struct or not (E.g.: impl->entityManager.create())?
-    extern std::unique_ptr<EntityManager>    sEntityManager;
-    extern std::unique_ptr<ArchetypeManager> sArchetypeManager;
-    extern std::unique_ptr<SystemManager>    sSystemManager;
-    extern int                               sInitSettings;
-    
-    /** @brief Setup for the ecs system. Throws an error if it is unable to initialise. */
-    void init(int flags=initFlag::None);
-    
     /**
-     * @brief Creates an entity that components can be added to.
+     * The 'core' of the Entity Component System. Allows you to create Entities that are used for Ids for Components.
+     * Components typically C style structs that contain purely data. Systems then manipulate on components.
+     * @author Ryan Purse
+     * @date 13/04/2022
      */
-    [[nodiscard]] Entity create();
-    
-    /**
-     * @brief Creates a component that can be attached to entities.
-     * @tparam T - The type (class or struct) that you want it to be.
-     * @param flag - How the type is interpreted (leave blank for default).
-     * @returns The id given to component T.
-     */
-    template<typename T>
-    Component create(creationType flag=Default);
-    
-    /**
-     * @brief Checks to see if the uType and the underlying types match within the system. THROWS if there's an error.
-     * uType[i] MUST pair with underlyingTypeHashes[i].
-     * @param uType - The components that you want to check.
-     * @param underlyingTypeHashes - The hash codes of each actual type.
-     */
-    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes);
-    
-    /**
-     * @brief Creates a system that can be used within the ecs system.
-     * @tparam System - The type of system. MUST inherit from base system.
-     * @tparam Args - The type of args passed to the constructor of the system.
-     * @param uType - The types of entities that you want this system to operate on.
-     * @param args - The arguments passed into the systems constructor.
-     */
-    template<typename System, typename ...Args>
-    void createSystem(const UType &uType, const Args &...args);
-    
-    /**
-     * @brief Creates a system that can be used within the ecs system.
-     * @tparam System - The type of system. MUST inherit from base system.
-     * @tparam Args - The type of args passed to the constructor of the system.
-     * @param args - The arguments passed into the systems constructor.
-     */
-    template<typename System, typename ...Args>
-    void createSystem(const Args &...args);
-    
-    /**
-     * @brief Adds a component to the specified entity.
-     * @tparam T - The type you want to give to value.
-     * @param eId - The entity Id that you want to give the component to.
-     * @param cId - The component Id of T.
-     * @param value - The actual data assigned to entity.
-     */
-    template<typename T>
-    void add(Entity eId, Component cId, const T &value);
-    
-    /**
-     * @brief Adds a component to the specified entity.
-     * @tparam T - The type you want to give to value.
-     * @param eId - The entity Id that you want to give the component to.
-     * @param value - The actual data assigned to entity.
-     */
-    template<typename T>
-    void add(Entity eId, const T &value);
-    
-    /**
-     * @brief Performs an update on every system and entity in the ecs system.
-     */
-    void update();
-    
-    /** Calls the start function for all system registered to the ecs system. */
-    void start();
-    
-    /**
-     * @brief
-     * @tparam EArgs
-     * @param entities
-     * @param uType
-     */
-    template<typename ...EArgs>
-    void processEntities(Entities<EArgs...> &entities, const UType &uType);
-    
-    /**
-     * @brief Makes the given Id the default id when handling components with the same type.
-     * @param id - The id that you want to make the default.
-     */
-    void makeFoundationComponent(Component id);
-    
-    /**
-     * @brief Gets the default Component Id assigned to T.
-     * @tparam T - The type you want to lookup.
-     * @returns A Component Id.
-     */
-    template<typename T>
-    [[nodiscard]] Component getComponentIdOf();
-    
-    /**
-     * @brief Gets the default Component Id assigned to T. (Identical to getComponentIdOf();)
-     * @tparam T - The type you want to lookup.
-     * @returns A component Id.
-     */
-    template<typename T>
-    [[nodiscard]] Component get();
-    
-    /**
-     * @brief Removes a component from an entity.
-     * @param entity - The entity you want to target
-     * @param component - The component that you want to remove.
-     */
-    void remove(Entity entity, Component component);
-    
-    
-    // Implementations
-    
-    template<typename T>
-    Component create(const creationType flag)
+    class Core
     {
-        Component out = sEntityManager->createComponent<T>();
+    public:
+        /** @brief Setup for the ecs system. Throws an error if it is unable to initialise. */
+        explicit Core(int flags=initFlag::None);
+    
+        /**
+         * @brief Creates an entity that components can be added to.
+         */
+        [[nodiscard]] Entity create();
+    
+        /**
+         * @brief Creates a component that can be attached to entities.
+         * @tparam T - The type (class or struct) that you want it to be.
+         * @param flag - How the type is interpreted (leave blank for default).
+         * @returns The id given to component T.
+         */
+        template<typename T>
+        Component create(creationType flag=Default);
+    
+        /**
+         * @brief Checks to see if the uType and the underlying types match within the system. THROWS if there's an error.
+         * uType[i] MUST pair with underlyingTypeHashes[i].
+         * @param uType - The components that you want to check.
+         * @param underlyingTypeHashes - The hash codes of each actual type.
+         */
+        void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes);
+    
+        /**
+         * @brief Creates a system that can be used within the ecs system.
+         * @tparam System - The type of system. MUST inherit from base system.
+         * @tparam Args - The type of args passed to the constructor of the system.
+         * @param uType - The types of entities that you want this system to operate on.
+         * @param args - The arguments passed into the systems constructor.
+         */
+        template<typename System, typename ...Args>
+        void createSystem(const UType &uType, const Args &...args);
+    
+        /**
+         * @brief Creates a system that can be used within the ecs system.
+         * @tparam System - The type of system. MUST inherit from base system.
+         * @tparam Args - The type of args passed to the constructor of the system.
+         * @param args - The arguments passed into the systems constructor.
+         */
+        template<typename System, typename ...Args>
+        void createSystem(const Args &...args);
+    
+        /**
+         * @brief Adds a component to the specified entity.
+         * @tparam T - The type you want to give to value.
+         * @param eId - The entity Id that you want to give the component to.
+         * @param cId - The component Id of T.
+         * @param value - The actual data assigned to entity.
+         */
+        template<typename T>
+        void add(Entity eId, Component cId, const T &value);
+    
+        /**
+         * @brief Adds a component to the specified entity.
+         * @tparam T - The type you want to give to value.
+         * @param eId - The entity Id that you want to give the component to.
+         * @param value - The actual data assigned to entity.
+         */
+        template<typename T>
+        void add(Entity eId, const T &value);
+    
+        /**
+         * @brief Performs an update on every system and entity in the ecs system.
+         */
+        void update();
+    
+        /** Calls the start function for all system registered to the ecs system. */
+        void start();
+    
+        /**
+         * @brief
+         * @tparam EArgs
+         * @param entities
+         * @param uType
+         */
+        template<typename ...EArgs>
+        void processEntities(Entities<EArgs...> &entities, const UType &uType);
+    
+        /**
+         * @brief Makes the given Id the default id when handling components with the same type.
+         * @param id - The id that you want to make the default.
+         */
+        void makeFoundationComponent(Component id);
+    
+        /**
+         * @brief Gets the default Component Id assigned to T.
+         * @tparam T - The type you want to lookup.
+         * @returns A Component Id.
+         */
+        template<typename T>
+        [[nodiscard]] Component getComponentIdOf();
+    
+        /**
+         * @brief Gets the default Component Id assigned to T. (Identical to getComponentIdOf();)
+         * @tparam T - The type you want to lookup.
+         * @returns A component Id.
+         */
+        template<typename T>
+        [[nodiscard]] Component get();
+    
+        /**
+         * @brief Removes a component from an entity.
+         * @param entity - The entity you want to target
+         * @param component - The component that you want to remove.
+         */
+        void remove(Entity entity, Component component);
+    
+    protected:
+        int                 mInitSettings   { initFlag::None };
+        EntityManager       mEntityManager;
+        ArchetypeManager    mArchetypeManager;
+        SystemManager       mSystemManager;
+    };
+}
+
+
+namespace ecs
+{
+    // Deliberately separating with a namespace to show that this is the implementation.
+    template<typename T>
+    Component Core::create(const creationType flag)
+    {
+        Component out = mEntityManager.createComponent<T>();
         if (flag == creationType::TypeDefault)
-            sEntityManager->makeFoundationComponent(out);
+            mEntityManager.makeFoundationComponent(out);
         return out;
     }
     
     template<typename T, typename... Args>
-    void createSystem(const UType &uType, const Args &... args)
+    void Core::createSystem(const UType &uType, const Args &... args)
     {
         static_assert(std::is_base_of<IBaseSystem, T>(),
                       "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
         
         std::unique_ptr<IBaseSystem> system = std::make_unique<T>(args...);
         
-        const IEntities * const entities       = system->getEntities();
+        IEntities * const entities       = system->getEntities();
+        entities->mEcsRegisteredTo = this;
         const std::vector<uint64_t> typeHashes = entities->getUnderlyingTypeHashes();
-    
-        if (sInitSettings & initFlag::AutoInitialise)
+        
+        if (mInitSettings & initFlag::AutoInitialise)
         {
             // Attempt to autofill the rest to make the system type complete.
             UType components = entities->getDefaultComponents();
             for (int i = 0; i < uType.size(); ++i)
                 components[i] = uType[i];  // Switch out the ones that the user has already defined.
-    
+            
             verifySystem(components, typeHashes);
             
-            sSystemManager->addSystem(components, std::move(system));
+            mSystemManager.addSystem(components, std::move(system));
             return;
         }
         
         verifySystem(uType, typeHashes);
         
-        sSystemManager->addSystem(uType, std::move(system));
+        mSystemManager.addSystem(uType, std::move(system));
     }
     
     template<typename T, typename... Args>
-    void createSystem(const Args &... args)
+    void Core::createSystem(const Args &... args)
     {
         static_assert(std::is_base_of<IBaseSystem, T>(),
-                "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
+                      "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
         
         std::unique_ptr<T> system = std::make_unique<T>(args...);
         
-        const IEntities * const     entities    = system->getEntities();
+        IEntities * const     entities    = system->getEntities();
+        entities->mEcsRegisteredTo = this;
         const std::vector<uint64_t> typeHashes  = entities->getUnderlyingTypeHashes();
         const UType                 components  = entities->getDefaultComponents();
         
         verifySystem(components, typeHashes);  // Should never throw here, but it's a nice redundancy check.
         
-        sSystemManager->addSystem(components, std::move(system));
+        mSystemManager.addSystem(components, std::move(system));
     }
     
     template<typename T>
-    void add(Entity eId, Component cId, const T &value)
+    void Core::add(Entity eId, Component cId, const T &value)
     {
-        sArchetypeManager->add(eId, cId, value);
+        mArchetypeManager.add(eId, cId, value);
     }
     
     template<typename T>
-    void add(Entity eId, const T &value)
+    void Core::add(Entity eId, const T &value)
     {
-        const auto cId = sEntityManager->getComponentIdOf<T>();
-        sArchetypeManager->add(eId, cId, value);
+        const auto cId = mEntityManager.getComponentIdOf<T>();
+        mArchetypeManager.add(eId, cId, value);
     }
     
     template<typename... EArgs>
-    void processEntities(Entities<EArgs...> &entities, const UType &uType)
+    void Core::processEntities(Entities<EArgs...> &entities, const UType &uType)
     {
-        std::vector<Archetype*> archetypes = sArchetypeManager->getArchetypesWithSubset(uType);
+        std::vector<Archetype*> archetypes = mArchetypeManager.getArchetypesWithSubset(uType);
         
         for (Archetype *archetype : archetypes)
         {
@@ -225,14 +235,17 @@ namespace ecs
     }
     
     template<typename T>
-    Component getComponentIdOf()
+    Component Core::getComponentIdOf()
     {
-        return sEntityManager->getComponentIdOf<T>();
+        return mEntityManager.getComponentIdOf<T>();
     }
     
     template<typename T>
-    Component get()
+    Component Core::get()
     {
-        return sEntityManager->getComponentIdOf<T>();
+        return mEntityManager.getComponentIdOf<T>();
     }
 }
+
+
+

@@ -7,7 +7,6 @@ add_library(${LIBRARY_NAME} STATIC
         ${CMAKE_CURRENT_LIST_DIR}/src/components/Archetype.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/components/ArchetypeManager.cpp
 
-        ${CMAKE_CURRENT_LIST_DIR}/src/Core.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/Common.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/EntityManager.cpp
         ${CMAKE_CURRENT_LIST_DIR}/src/systems/SystemManager.cpp
@@ -17,14 +16,14 @@ add_library(${LIBRARY_NAME} STATIC
         ${CMAKE_CURRENT_LIST_DIR}/src/components/ComponentArray.h
 
         ${CMAKE_CURRENT_LIST_DIR}/include/Ecs.h
-        ${CMAKE_CURRENT_LIST_DIR}/include/Core.h
         ${CMAKE_CURRENT_LIST_DIR}/include/Common.h
         ${CMAKE_CURRENT_LIST_DIR}/src/EntityManager.h
         ${CMAKE_CURRENT_LIST_DIR}/include/systems/BaseSystem.h
         ${CMAKE_CURRENT_LIST_DIR}/src/systems/SystemManager.h
 
         ${CMAKE_CURRENT_LIST_DIR}/include/systems/Entities.h
-        )
+        ${CMAKE_CURRENT_LIST_DIR}/src/Core.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/include/Core.h)
 
 target_include_directories(${LIBRARY_NAME} PUBLIC
         ${CMAKE_CURRENT_LIST_DIR}/include

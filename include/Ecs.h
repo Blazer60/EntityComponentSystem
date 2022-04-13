@@ -9,6 +9,6 @@
 #pragma once
 
 #include "Common.h"
-#include "Core.h"
 #include "BaseSystem.h"
 #include "Entities.h"
+#include "Core.h"

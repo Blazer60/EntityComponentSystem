@@ -13,13 +13,19 @@
 #include <set>
 #include <algorithm>
 
+/** An Entity ID that can be used to get data from the Entity Component System */
+typedef uint64_t                Entity;
+
+/** A Component ID to identify components (Identical to Entity and is used for clarity). */
+typedef Entity                  Component;
+
 namespace ecs
 {
     /** An Entity ID that can be used to get data from the Entity Component System */
-    typedef uint64_t                Entity;
+    typedef ::Entity               Entity;
 
     /** A Component ID to identify components (Identical to Entity and is used for clarity). */
-    typedef Entity                  Component;
+    typedef ::Component                 Component;
 
     /** A list of components that an entity has. Entities can have both components and entities attached to them. */
     typedef std::set<Component>     ComponentVector;

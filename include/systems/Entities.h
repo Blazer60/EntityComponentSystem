@@ -8,7 +8,6 @@
 #pragma once
 
 #include "Core.h"
-
 #include <functional>
 
 namespace ecs
@@ -18,6 +17,7 @@ namespace ecs
      */
     class IEntities
     {
+        friend class Core;
     public:
         /**
          * @brief Calls process entities with the correct types.
@@ -36,6 +36,10 @@ namespace ecs
          * @returns hash code of all types.
          */
         [[nodiscard]] virtual std::vector<uint64_t> getUnderlyingTypeHashes() const = 0;
+
+    protected:
+        // Set when a system is created.
+        Core* mEcsRegisteredTo { nullptr };
     };
     
     /**
@@ -112,7 +116,7 @@ namespace ecs
     template<class... Args>
     void Entities<Args...>::callbackProcessEntities(const UType &uType)
     {
-        ecs::processEntities(*this, uType);
+        mEcsRegisteredTo->processEntities(*this, uType);
     }
     
     template<class... Args>
@@ -151,7 +155,7 @@ namespace ecs
     template<class... Args>
     UType Entities<Args...>::getDefaultComponents() const
     {
-        return { getComponentIdOf<Args>()... };
+        return { mEcsRegisteredTo->getComponentIdOf<Args>()... };
     }
     
     template<class... Args>

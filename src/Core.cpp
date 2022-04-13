@@ -1,7 +1,7 @@
 /**
  * @file Core.cpp
  * @author Ryan Purse
- * @date 20/01/2022
+ * @date 13/04/2022
  */
 
 
@@ -9,59 +9,47 @@
 
 namespace ecs
 {
-    // Should these be in a struct or not (E.g.: impl->entityManager.create())?
-    std::unique_ptr<EntityManager>    sEntityManager;
-    std::unique_ptr<ArchetypeManager> sArchetypeManager;
-    std::unique_ptr<SystemManager>    sSystemManager;
-    int                               sInitSettings;
-    
-    void init(const int flags)
+    Core::Core(int flags) :
+        mInitSettings(flags),
+        mEntityManager(flags & initFlag::AutoInitialise)
     {
-        if (flags & initFlag::AutoInitialise)
-            sEntityManager = std::make_unique<EntityManager>(true);
-        else
-            sEntityManager = std::make_unique<EntityManager>();
-        
-        sArchetypeManager = std::make_unique<ArchetypeManager>();
-        sSystemManager    = std::make_unique<SystemManager>();
-        sInitSettings = flags;
     }
     
-    Entity create()
+    Entity Core::create()
     {
-        return sEntityManager->createEntity();
+        return mEntityManager.createEntity();
     }
     
-    void update()
+    void Core::update()
     {
-        sSystemManager->update();
+        mSystemManager.update();
     }
     
-    void start()
+    void Core::start()
     {
-        sSystemManager->start();
+        mSystemManager.start();
     }
     
-    void makeFoundationComponent(Component id)
+    void Core::makeFoundationComponent(Component id)
     {
-        sEntityManager->makeFoundationComponent(id);
+        mEntityManager.makeFoundationComponent(id);
     }
     
-    void verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes)
+    void Core::verifySystem(const UType &uType, const std::vector<uint64_t> &underlyingTypeHashes)
     {
         // Miss-matched alignment. Make sure the length of uTypes matches the Systems type length.
         if (underlyingTypeHashes.size() != uType.size())
             throw std::exception();
         for (int i = 0; i < underlyingTypeHashes.size(); ++i)
         {
-            if (!sEntityManager->isValid(uType[i], underlyingTypeHashes[i]))
+            if (!mEntityManager.isValid(uType[i], underlyingTypeHashes[i]))
                 throw std::exception();  // The type has not been registered yet. The system will produce undefined results.
             // You could also have miss-aligned the types with the underlying types.
         }
     }
     
-    void remove(Entity entity, Component component)
+    void Core::remove(Entity entity, Component component)
     {
-        sArchetypeManager->remove(entity, component);
+        mArchetypeManager.remove(entity, component);
     }
 }
