@@ -61,7 +61,7 @@ namespace ecs
          * @param args - The arguments passed into the systems constructor.
          */
         template<typename System, typename ...Args>
-        void createSystem(const UType &uType, const Args &...args);
+        void createSystem(const UType &uType, Args &&...args);
     
         /**
          * @brief Creates a system that can be used within the ecs system.
@@ -70,7 +70,7 @@ namespace ecs
          * @param args - The arguments passed into the systems constructor.
          */
         template<typename System, typename ...Args>
-        void createSystem(const Args &...args);
+        void createSystem(Args &&...args);
     
         /**
          * @brief Adds a component to the specified entity.
@@ -195,12 +195,12 @@ namespace ecs
     }
     
     template<typename T, typename... Args>
-    void Core::createSystem(const UType &uType, const Args &... args)
+    void Core::createSystem(const UType &uType, Args &&... args)
     {
         static_assert(std::is_base_of<IBaseSystem, T>(),
                       "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
         
-        std::unique_ptr<IBaseSystem> system = std::make_unique<T>(args...);
+        std::unique_ptr<IBaseSystem> system = std::make_unique<T>(std::forward<Args>(args)...);
         
         IEntities * const entities       = system->getEntities();
         entities->mEcsRegisteredTo = this;
@@ -225,12 +225,12 @@ namespace ecs
     }
     
     template<typename T, typename... Args>
-    void Core::createSystem(const Args &... args)
+    void Core::createSystem(Args &&... args)
     {
         static_assert(std::is_base_of<IBaseSystem, T>(),
                       "T must be a base system E.g.: MySystem : public ecs::BaseSystem<>");
         
-        std::unique_ptr<T> system = std::make_unique<T>(args...);
+        std::unique_ptr<T> system = std::make_unique<T>(std::forward<Args>(args)...);
         
         IEntities * const     entities    = system->getEntities();
         entities->mEcsRegisteredTo = this;
