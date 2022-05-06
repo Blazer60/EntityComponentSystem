@@ -107,7 +107,7 @@ namespace ecs
     
     typedef uint32_t ExecutionOrder;
     enum executionOrderFlags : ExecutionOrder {
-        PreUpdate, Update, PreRender, Render, ImGui
+        PreFixedUpdate, FixedUpdate, PreUpdate, Update, PreRender, Render, ImGui
     };
     
     /**

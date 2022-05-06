@@ -14,6 +14,12 @@ namespace ecs
     {
         switch (iBaseSystem->getExecutionOrder())
         {
+            case PreFixedUpdate:
+                mPreFixedUpdateSystems.push_back({ std::move(iBaseSystem), uType });
+                break;
+            case FixedUpdate:
+                mFixedUpdateSystems.push_back({ std::move(iBaseSystem), uType });
+                break;
             case PreUpdate:
                 mPreUpdateSystems.push_back({ std::move(iBaseSystem), uType });
                 break;
@@ -31,6 +37,23 @@ namespace ecs
                 break;
             default:
                 break;
+        }
+    }
+    
+    void SystemManager::fixedUpdate()
+    {
+        for (const auto &[system, uType] : mPreFixedUpdateSystems)
+        {
+            system->onUpdate();
+            const auto iEntities = system->getEntities();
+            iEntities->callbackProcessEntities(uType);
+        }
+    
+        for (const auto &[system, uType] : mFixedUpdateSystems)
+        {
+            system->onUpdate();
+            const auto iEntities = system->getEntities();
+            iEntities->callbackProcessEntities(uType);
         }
     }
     

@@ -90,6 +90,11 @@ namespace ecs
          */
         template<typename T>
         void add(Entity eId, const T &value);
+        
+        /**
+         * @brief Performs an update on every system and entity in the ecs system.
+         */
+        void fixedUpdate();
     
         /**
          * @brief Performs an update on every system and entity in the ecs system.

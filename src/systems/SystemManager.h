@@ -36,6 +36,11 @@ namespace ecs
         void addSystem(const UType &uType, std::unique_ptr<IBaseSystem> iBaseSystem);
         
         /**
+         * @brief Updates all of the systems assigned as a fixed update system.
+         */
+        void fixedUpdate();
+        
+        /**
          * @brief Updates all of the system assigned to this system manager.
          */
         void update();
@@ -51,6 +56,8 @@ namespace ecs
         void imGui();
 
     protected:
+        std::vector<SystemUTypePair> mPreFixedUpdateSystems;
+        std::vector<SystemUTypePair> mFixedUpdateSystems;
         std::vector<SystemUTypePair> mPreUpdateSystems;
         std::vector<SystemUTypePair> mUpdateSystems;
         std::vector<SystemUTypePair> mPreRenderSystems;

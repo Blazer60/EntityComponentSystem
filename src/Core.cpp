@@ -20,6 +20,11 @@ namespace ecs
         return mEntityManager.createEntity();
     }
     
+    void Core::fixedUpdate()
+    {
+        mSystemManager.fixedUpdate();
+    }
+    
     void Core::update()
     {
         mSystemManager.update();
