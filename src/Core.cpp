@@ -25,9 +25,14 @@ namespace ecs
         mSystemManager.update();
     }
     
-    void Core::start()
+    void Core::render()
     {
-        mSystemManager.start();
+        mSystemManager.render();
+    }
+    
+    void Core::imGui()
+    {
+        mSystemManager.imGui();
     }
     
     void Core::makeFoundationComponent(Component id)

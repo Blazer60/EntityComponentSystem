@@ -21,6 +21,12 @@ namespace ecs
      */
     class SystemManager
     {
+        struct SystemUTypePair
+        {
+            std::unique_ptr<IBaseSystem>    system;
+            UType                           uType;
+        };
+        
     public:
         /**
          * @brief Adds a system to the system manager.
@@ -30,18 +36,26 @@ namespace ecs
         void addSystem(const UType &uType, std::unique_ptr<IBaseSystem> iBaseSystem);
         
         /**
-         * @brief Calls start on all systems assigned to this system manager.
-         */
-        void start();
-        
-        /**
          * @brief Updates all of the system assigned to this system manager.
          */
         void update();
+        
+        /**
+         * @brief Renders all of the systems assigned to this system manager.
+         */
+        void render();
+        
+        /**
+         * @brief Renders all ImGui related systems assigned to this system manager.
+         */
+        void imGui();
 
     protected:
-        std::vector<std::unique_ptr<IBaseSystem>>   mSystems;
-        std::vector<UType>                          mSystemUTypes;
+        std::vector<SystemUTypePair> mPreUpdateSystems;
+        std::vector<SystemUTypePair> mUpdateSystems;
+        std::vector<SystemUTypePair> mPreRenderSystems;
+        std::vector<SystemUTypePair> mRenderSystems;
+        std::vector<SystemUTypePair> mImGuiSystems;
     };
 }
 

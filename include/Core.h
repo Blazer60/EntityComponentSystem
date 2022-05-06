@@ -95,9 +95,16 @@ namespace ecs
          * @brief Performs an update on every system and entity in the ecs system.
          */
         void update();
-    
-        /** Calls the start function for all system registered to the ecs system. */
-        void start();
+        
+        /**
+         * @brief Performs a render update on every system and entity in the ecs system.
+         */
+        void render();
+        
+        /**
+         * @brief Performs an imGui update on every system and entity in the ecs system.
+         */
+        void imGui();
     
         /**
          * @brief

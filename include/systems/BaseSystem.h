@@ -26,16 +26,11 @@ namespace ecs
     {
     public:
         virtual ~IBaseSystem() = default;
-    
-        /**
-         * @brief Called when ecs::start() is called.
-         * Allows you to update member variables and change the foreach function dynamically.
-         */
-        virtual void onStart() { };
         
         /**
-         * @brief Called when ecs::update() is called.
-         * Allows you to update member variables and change the foreach function dynamically.
+         * @brief Only called for when it is scheduled for.
+         * mEntities.forEach() is called directly after onUpdate.
+         * @see scheduleFor()
          */
         virtual void onUpdate() { };
         
@@ -50,6 +45,13 @@ namespace ecs
          * @returns IEntities interface class.
          */
         [[nodiscard]] virtual IEntities *getEntities() = 0;
+        
+        void scheduleFor(ExecutionOrder executionOrder) { mExecutionOrder = executionOrder; }
+        
+        ExecutionOrder getExecutionOrder() const { return mExecutionOrder; }
+        
+    protected:
+        ExecutionOrder mExecutionOrder { Update };
     };
     
     /**

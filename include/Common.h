@@ -105,6 +105,11 @@ namespace ecs
         TypeDefault,
     };
     
+    typedef uint32_t ExecutionOrder;
+    enum executionOrderFlags : ExecutionOrder {
+        PreUpdate, Update, PreRender, Render, ImGui
+    };
+    
     /**
      * @brief Checks to see if the subset is wholly contained within set.
      * @param set - The set you want to check in. E.g.: (A, B, C, D)

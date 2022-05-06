@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Core.h"
+#include "Common.h"
 #include <functional>
 
 namespace ecs
@@ -39,7 +40,7 @@ namespace ecs
 
     protected:
         // Set when a system is created.
-        Core* mEcsRegisteredTo { nullptr };
+        Core*           mEcsRegisteredTo    { nullptr };
     };
     
     /**
